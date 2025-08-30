@@ -23,7 +23,7 @@ Main contract for handling USDT deposits and owner-controlled distributions.
 - User balance tracking
 - Transaction history
 - Emergency pause functionality
-- Comprehensive statistics
+- Statistics
 
 ## Quick Start
 
@@ -83,9 +83,7 @@ forge script script/Deploy.s.sol --rpc-url $SEPOLIA_RPC_URL --broadcast --verify
   - `amount`: Amount to deposit (in smallest unit - 6 decimals)
   - `description`: Optional description
 
-#### `withdrawUSDT(uint256 amount, string description)`
-- **Purpose**: Withdraw USDT tokens from the contract (REMOVED)
-- **Note**: Users can only deposit. Only the owner can send tokens to addresses.
+
 
 #### `getUserBalance(address userAddress)`
 - **Purpose**: Get user's balance information
