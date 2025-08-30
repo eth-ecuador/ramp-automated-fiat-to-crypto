@@ -1,0 +1,6 @@
+[submodule "tokenlogic/lib/forge-std"]
+	path = tokenlogic/lib/forge-std
+	url = https://github.com/foundry-rs/forge-std
+[submodule "tokenlogic/lib/openzeppelin-contracts"]
+	path = tokenlogic/lib/openzeppelin-contracts
+	url = https://github.com/OpenZeppelin/openzeppelin-contracts
