@@ -140,19 +140,22 @@ contract OnrampTeeTest is Test {
         assertEq(balanceAfterDeposit.withdrawn, 0);
         assertEq(balanceAfterDeposit.hasDeposited, true);
         
-        // Owner sends tokens to TestAccount
+        // Owner sends USDT to testAccount
         vm.startPrank(owner);
-        onrampEcuador.sendUSDTToAddress(testAccount, withdrawAmount, "Owner payment to specific account");
+        onrampEcuador.sendUSDTToAddress(testAccount, withdrawAmount, "Specific account withdrawal");
         vm.stopPrank();
         
-        // Check TestAccount received tokens
+        // Check withdrawal was successful
         assertEq(usdtToken.balanceOf(testAccount), withdrawAmount);
         assertEq(usdtToken.balanceOf(address(onrampEcuador)), depositAmount - withdrawAmount);
         
-        // Check user balance after owner payment
-        OnrampEcuador.UserBalance memory balanceAfterPayment = onrampEcuador.getUserBalance(testAccount);
-        assertEq(balanceAfterPayment.deposited, depositAmount);
-        assertEq(balanceAfterPayment.withdrawn, 0); // User didn't withdraw, owner sent tokens
+        // Check user balance after withdrawal
+        OnrampEcuador.UserBalance memory balanceAfterWithdrawal = onrampEcuador.getUserBalance(testAccount);
+        assertEq(balanceAfterWithdrawal.deposited, depositAmount);
+        assertEq(balanceAfterWithdrawal.withdrawn, withdrawAmount);
+        
+        // Check available balance
+        assertEq(onrampEcuador.getAvailableBalance(testAccount), depositAmount - withdrawAmount);
         
         // Check transaction history
         uint256[] memory userTransactions = onrampEcuador.getUserTransactions(testAccount, 10);
@@ -165,40 +168,29 @@ contract OnrampTeeTest is Test {
         assertEq(tx1.isDeposit, true);
         assertEq(tx1.description, "Specific account deposit");
         
-        // Verify second transaction (owner payment)
+        // Verify second transaction (withdrawal)
         OnrampEcuador.Transaction memory tx2 = onrampEcuador.getTransaction(userTransactions[1]);
         assertEq(tx2.user, testAccount);
         assertEq(tx2.amount, withdrawAmount);
         assertEq(tx2.isDeposit, false);
-        assertEq(tx2.description, "Owner payment to specific account");
+        assertEq(tx2.description, "Specific account withdrawal");
     }
     
-    function test_OwnerCanSendTokensToDepositors() public {
-        // Setup: Multiple users deposit
+    function test_WithdrawMoreThanDeposited() public {
+        // Setup: Mint and deposit
         vm.startPrank(owner);
         usdtToken.mint(user1, DEPOSIT_AMOUNT);
-        usdtToken.mint(user2, DEPOSIT_AMOUNT);
         vm.stopPrank();
         
         vm.startPrank(user1);
         usdtToken.approve(address(onrampEcuador), DEPOSIT_AMOUNT);
-        onrampEcuador.depositUSDT(DEPOSIT_AMOUNT, "User1 deposit");
-        vm.stopPrank();
+        onrampEcuador.depositUSDT(DEPOSIT_AMOUNT, "Test deposit");
         
-        vm.startPrank(user2);
-        usdtToken.approve(address(onrampEcuador), DEPOSIT_AMOUNT);
-        onrampEcuador.depositUSDT(DEPOSIT_AMOUNT, "User2 deposit");
+        // Try to send more than deposited (as owner)
+        uint256 excessiveAmount = DEPOSIT_AMOUNT + 1000 * 10**6;
+        vm.expectRevert("Insufficient contract balance");
+        onrampEcuador.sendUSDTToAddress(user1, excessiveAmount, "Test withdrawal");
         vm.stopPrank();
-        
-        // Owner sends tokens back to user1
-        uint256 sendAmount = 500 * 10**6; // 500 USDT
-        vm.startPrank(owner);
-        onrampEcuador.sendUSDTToAddress(user1, sendAmount, "Owner payment to user1");
-        vm.stopPrank();
-        
-        // Check user1 received tokens
-        assertEq(usdtToken.balanceOf(user1), sendAmount);
-        assertEq(usdtToken.balanceOf(address(onrampEcuador)), DEPOSIT_AMOUNT * 2 - sendAmount);
     }
     
     function test_MultipleUsers() public {

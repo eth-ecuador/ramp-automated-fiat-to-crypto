@@ -14,4 +14,13 @@ pub enum OpenBankError {
     
     #[error("User already exists: {email}")]
     UserAlreadyExists { email: String },
+    
+    #[error("Invalid wallet address: {address}")]
+    InvalidWalletAddress { address: String },
+    
+    #[error("No wallet address associated with user")]
+    NoWalletAddress,
+    
+    #[error("Smart contract error: {message}")]
+    SmartContractError { message: String },
 }
