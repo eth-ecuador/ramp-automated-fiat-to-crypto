@@ -429,12 +429,12 @@ async fn main() {
         //Openbank API mocking
         .route("/health", get(health_check))
         .route("/users", post(create_user))
-        .route("/users/:user_id", get(get_user))
-        .route("/users/:user_id/accounts", get(get_user_accounts))
-        .route("/users/register/:user_id", post(create_account))
-        .route("/accounts/:account_id", get(get_account))
-        .route("/accounts/:account_id/deposit", post(deposit))
-        .route("/accounts/:account_id/transactions", get(get_transactions))
+        .route("/users/{user_id}", get(get_user))
+        .route("/users/{user_id}/accounts", get(get_user_accounts))
+        .route("/users/register/{user_id}", post(create_account))
+        .route("/accounts/{account_id}", get(get_account))
+        .route("/accounts/{account_id}/deposit", post(deposit))
+        .route("/accounts/{account_id}/transactions", get(get_transactions))
         .route("/withdraw", post(withdraw_to_wallet))
         
         //OnrampTee routes
@@ -442,7 +442,7 @@ async fn main() {
         .layer(cors)
         .with_state(state);
     
-    let listener = tokio::net::TcpListener::bind("127.0.0.1:3000").await.unwrap();
+    let listener = tokio::net::TcpListener::bind("0.0.0.0:3000").await.unwrap();
     println!("RampTee running on http://127.0.0.1:3000");
     println!("Available endpoints:");
     println!("   GET  /health - Health check");
