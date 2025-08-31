@@ -1,4 +1,5 @@
 /openbankapi/target
+/openbankapi/.env
 /tokenlogic/cache
 /tokenlogic/out
 /target

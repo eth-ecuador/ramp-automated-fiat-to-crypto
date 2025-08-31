@@ -1,0 +1,16 @@
+version: '3.8'
+
+services:
+  app:
+    image: eldiosito2/laperra:seguia2
+    container_name: app
+    ports:
+      - "3000:3000"
+
+  nodejs:
+    image: eldiosito2/raserver:latest
+    container_name: nodejs
+    ports:
+      - "3001:3001"
+    volumes:
+      - /var/run/tappd.sock:/var/run/tappd.sock
