@@ -1,5 +1,7 @@
 # OnrampTee - Decentralized Onramp Solution
 
+Frontend github https://github.com/padimaster/smootee
+
 > **Secure fiat-to-crypto onramp with Trusted Execution Environments (TEE)**
 
 ## Overview
