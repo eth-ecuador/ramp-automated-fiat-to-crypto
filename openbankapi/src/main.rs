@@ -429,12 +429,12 @@ async fn main() {
         //Openbank API mocking
         .route("/health", get(health_check))
         .route("/users", post(create_user))
-        .route("/users/:user_id", get(get_user))
-        .route("/users/:user_id/accounts", get(get_user_accounts))
-        .route("/users/register/:user_id", post(create_account))
-        .route("/accounts/:account_id", get(get_account))
-        .route("/accounts/:account_id/deposit", post(deposit))
-        .route("/accounts/:account_id/transactions", get(get_transactions))
+        .route("/users/{user_id}", get(get_user))
+        .route("/users/{user_id}/accounts", get(get_user_accounts))
+        .route("/users/{user_id}/register", post(create_account))
+        .route("/accounts/{account_id}", get(get_account))
+        .route("/accounts/{account_id}/deposit", post(deposit))
+        .route("/accounts/{account_id}/transactions", get(get_transactions))
         .route("/withdraw", post(withdraw_to_wallet))
         
         //OnrampTee routes
